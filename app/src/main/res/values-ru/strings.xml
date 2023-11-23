@@ -2,4 +2,6 @@
 <resources>
     <string name="app_name">Android Школа</string>
     <string name="hello_eltex">Привет, Eltex!</string>
+    <string name="avatar">аватар</string>
+    <string name="menu">меню</string>
 </resources>
