@@ -26,6 +26,10 @@ android {
             )
         }
     }
+
+    buildFeatures {
+        viewBinding = true
+    }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
@@ -36,6 +40,9 @@ android {
 }
 
 dependencies {
+    val lifecycleVersion = "2.6.2"
+    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycleVersion")
+    implementation("androidx.activity:activity-ktx:1.8.1")
 
     implementation("androidx.core:core-ktx:1.9.0")
     implementation("androidx.appcompat:appcompat:1.6.1")
