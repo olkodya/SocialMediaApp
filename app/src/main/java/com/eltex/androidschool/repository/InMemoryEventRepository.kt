@@ -26,7 +26,7 @@ class InMemoryEventRepository : EventRepository {
     }
 
     override fun participate() {
-        TODO("Not yet implemented")
+        state.update { it.copy(participatedByMe = !it.participatedByMe) }
     }
 
 }
