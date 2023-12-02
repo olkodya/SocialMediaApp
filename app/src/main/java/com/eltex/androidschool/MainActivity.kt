@@ -9,6 +9,7 @@ import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.eltex.androidschool.adapter.EventsAdapter
 import com.eltex.androidschool.databinding.EventBinding
+import com.eltex.androidschool.itemdecoration.OffsetDecoration
 import com.eltex.androidschool.repository.InMemoryEventRepository
 import com.eltex.androidschool.viewmodel.EventViewModel
 import kotlinx.coroutines.flow.launchIn
@@ -39,6 +40,8 @@ class MainActivity : AppCompatActivity() {
         )
 
         binding.root.adapter = adapter
+
+        binding.root.addItemDecoration(OffsetDecoration(resources.getDimensionPixelSize(R.dimen.small_spacing)))
         viewModel.uiState
             .flowWithLifecycle(lifecycle)
             .onEach {
