@@ -4,4 +4,7 @@
     <string name="avatar">avatar</string>
     <string name="menu">menu</string>
     <string name="not_implemented">Not implemented</string>
+    <string name="like">like</string>
+    <string name="share">share</string>
+    <string name="participate">participate</string>
 </resources>

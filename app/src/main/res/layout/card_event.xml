@@ -139,6 +139,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/big_spacing"
+            android:contentDescription="@string/like"
             app:icon="@drawable/baseline_favorite_24"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/eventLink"
@@ -151,6 +152,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/big_spacing"
             android:layout_marginEnd="@dimen/common_spacing"
+            android:contentDescription="@string/share"
             app:icon="@drawable/baseline_share_24"
             app:layout_constraintStart_toEndOf="@id/like"
             app:layout_constraintTop_toBottomOf="@id/eventLink" />
@@ -162,6 +164,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/big_spacing"
             android:layout_marginEnd="@dimen/common_spacing"
+            android:contentDescription="@string/participate"
             app:icon="@drawable/people"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@id/eventLink"
