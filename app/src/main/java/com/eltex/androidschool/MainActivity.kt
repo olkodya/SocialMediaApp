@@ -28,10 +28,15 @@ class MainActivity : AppCompatActivity() {
                 initializer { EventViewModel(InMemoryEventRepository()) }
             }
         }
-        val adapter = EventsAdapter {
-            viewModel.likById(it.id)
+        val adapter = EventsAdapter(
+            {
+                viewModel.likeById(it.id)
+            },
+            {
+                viewModel.participateById(it.id)
 
-        }
+            }
+        )
 
         binding.root.adapter = adapter
         viewModel.uiState
@@ -41,15 +46,6 @@ class MainActivity : AppCompatActivity() {
             }
             .launchIn(lifecycleScope)
 
-//        binding.like.setOnClickListener {
-//            viewModel.like()
-//
-//        }
-//
-//        binding.members.setOnClickListener {
-//            viewModel.participate()
-//        }
-//
 //        binding.share.setOnClickListener {
 //            toast(R.string.not_implemented)
 //        }

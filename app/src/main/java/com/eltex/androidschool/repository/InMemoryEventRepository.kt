@@ -36,8 +36,15 @@ class InMemoryEventRepository : EventRepository {
     }
 
 
-    override fun participate() {
-        //  state.update { it.copy(participatedByMe = !it.participatedByMe) }
+    override fun participateById(id: Long) {
+        state.update { events ->
+            events.map {
+                if (id == it.id) {
+                    it.copy(participatedByMe = !it.participatedByMe)
+                } else {
+                    it
+                }
+            }
+        }
     }
-
 }

@@ -11,7 +11,7 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
 
 class EventViewModel(private val repository: EventRepository) : ViewModel() {
-    private val _uiState = MutableStateFlow(EventUiState());
+    private val _uiState = MutableStateFlow(EventUiState())
     val uiState: StateFlow<EventUiState> = _uiState.asStateFlow()
 
     init {
@@ -23,11 +23,11 @@ class EventViewModel(private val repository: EventRepository) : ViewModel() {
         }.launchIn(viewModelScope)
     }
 
-    fun likById(id: Long) {
+    fun likeById(id: Long) {
         repository.likeById(id)
     }
 
-    fun participate() {
-        repository.participate()
+    fun participateById(id: Long) {
+        repository.participateById(id)
     }
 }
