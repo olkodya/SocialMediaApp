@@ -15,16 +15,16 @@ class EventViewModel(private val repository: EventRepository) : ViewModel() {
     val uiState: StateFlow<EventUiState> = _uiState.asStateFlow()
 
     init {
-        repository.getEvent().onEach { event ->
+        repository.getEvent().onEach { events ->
             _uiState.update {
-                it.copy(event = event)
+                it.copy(events = events)
             }
 
         }.launchIn(viewModelScope)
     }
 
-    fun like() {
-        repository.like()
+    fun likById(id: Long) {
+        repository.likeById(id)
     }
 
     fun participate() {
