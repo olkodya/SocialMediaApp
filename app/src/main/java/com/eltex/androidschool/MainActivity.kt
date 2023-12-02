@@ -7,7 +7,7 @@ import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
-import com.eltex.androidschool.databinding.CardEventBinding
+import com.eltex.androidschool.adapter.EventsAdapter
 import com.eltex.androidschool.databinding.EventBinding
 import com.eltex.androidschool.repository.InMemoryEventRepository
 import com.eltex.androidschool.viewmodel.EventViewModel
@@ -28,20 +28,16 @@ class MainActivity : AppCompatActivity() {
                 initializer { EventViewModel(InMemoryEventRepository()) }
             }
         }
+        val adapter = EventsAdapter {
+            viewModel.likById(it.id)
 
+        }
+
+        binding.root.adapter = adapter
         viewModel.uiState
             .flowWithLifecycle(lifecycle)
             .onEach {
-                binding.container.removeAllViews()
-                val events = it.events
-                events.forEach { event ->
-                    val eventBinding =
-                        CardEventBinding.inflate(layoutInflater, binding.container, true)
-                    bindEvent(eventBinding, event)
-                    eventBinding.like.setOnClickListener {
-                        viewModel.likById(event.id)
-                    }
-                }
+                adapter.submitList(it.events)
             }
             .launchIn(lifecycleScope)
 
