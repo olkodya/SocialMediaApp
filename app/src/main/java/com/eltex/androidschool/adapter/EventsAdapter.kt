@@ -2,36 +2,55 @@ package com.eltex.androidschool.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.widget.PopupMenu
 import androidx.recyclerview.widget.ListAdapter
 import com.eltex.androidschool.R
 import com.eltex.androidschool.databinding.CardEventBinding
 import com.eltex.androidschool.model.Event
-import com.eltex.androidschool.utils.toast
 
 class EventsAdapter(
-    private val likeClickListener: (Event) -> Unit,
-    private val participateClickListener: (Event) -> Unit,
-    private val shareClickListener: (Event) -> Unit,
+    private val listener: EventListener,
 ) :
     ListAdapter<Event, EventViewHolder>(EventItemCallback()) {
+
+    interface EventListener {
+        fun onLikeClickListener(event: Event)
+        fun onShareClickListener(event: Event)
+        fun onDeleteClickListener(event: Event)
+        fun onParticipateClickListener(event: Event)
+    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): EventViewHolder {
         val inflater = LayoutInflater.from(parent.context)
         val eventBinding = CardEventBinding.inflate(inflater, parent, false)
         val viewHolder = EventViewHolder(eventBinding)
         eventBinding.like.setOnClickListener {
-            likeClickListener(getItem(viewHolder.adapterPosition))
+            listener.onLikeClickListener(getItem(viewHolder.adapterPosition))
         }
         eventBinding.members.setOnClickListener {
-            participateClickListener(getItem(viewHolder.adapterPosition))
+            listener.onParticipateClickListener(getItem(viewHolder.adapterPosition))
         }
 
         eventBinding.share.setOnClickListener {
-            shareClickListener(getItem(viewHolder.adapterPosition))
+            listener.onShareClickListener(getItem(viewHolder.adapterPosition))
         }
 
         eventBinding.menu.setOnClickListener {
-            parent.context.toast(R.string.not_implemented)
+            PopupMenu(it.context, it).apply {
+                inflate(R.menu.event_actions_menu)
+                setOnMenuItemClickListener { item ->
+                    when (item.itemId) {
+                        R.id.delete -> {
+                            listener.onDeleteClickListener(getItem(viewHolder.adapterPosition))
+                            true
+                        }
+
+                        else -> false
+                    }
+                }
+
+                show()
+            }
         }
         return viewHolder
     }
