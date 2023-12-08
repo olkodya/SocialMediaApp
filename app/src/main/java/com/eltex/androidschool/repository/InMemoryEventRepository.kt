@@ -65,4 +65,16 @@ class InMemoryEventRepository : EventRepository {
 
         }
     }
+
+    override fun editById(id: Long, content: String) {
+        state.update { events ->
+            events.map {
+                if (id == it.id) {
+                    it.copy(content = content)
+                } else {
+                    it
+                }
+            }
+        }
+    }
 }

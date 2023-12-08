@@ -6,4 +6,5 @@
         android:icon="@drawable/baseline_check_24"
         android:title="@string/save_post"
         app:showAsAction="ifRoom" />
+
 </menu>

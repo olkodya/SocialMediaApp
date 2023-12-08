@@ -14,4 +14,6 @@
     <string name="new_event_description">New event</string>
     <string name="event_empty_error">Content must not be blank</string>
     <string name="delete_event">Delete event</string>
+    <string name="edit_event">Edit event</string>
+    <string name="edit_event_title">Edit Event</string>
 </resources>

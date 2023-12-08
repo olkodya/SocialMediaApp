@@ -18,7 +18,6 @@ import com.eltex.androidschool.repository.InMemoryEventRepository
 import com.eltex.androidschool.viewmodel.EventViewModel
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
-
 class MainActivity : AppCompatActivity() {
 
 
@@ -45,6 +44,15 @@ class MainActivity : AppCompatActivity() {
             val intent = Intent(this, NewEventActivity::class.java)
             newEventContract.launch(intent)
         }
+
+        val editEventContract =
+            registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+                val id = it.data?.getLongExtra("ID", 0)
+                val content = it.data?.getStringExtra(Intent.EXTRA_TEXT)
+                if (content != null && id != null) {
+                    viewModel.editById(id, content)
+                }
+            }
 
 
         val adapter = EventsAdapter(
@@ -74,6 +82,16 @@ class MainActivity : AppCompatActivity() {
                     viewModel.participateById(event.id)
                 }
 
+                override fun onEditClickListener(event: Event) {
+                    val intent = Intent(this@MainActivity, EditEventActivity::class.java)
+                        .setAction(Intent.ACTION_SEND)
+                        .putExtra(
+                            Intent.EXTRA_TEXT,
+                            event.content
+                        ).putExtra("ID", event.id)
+                    editEventContract.launch(intent)
+                }
+
             }
         )
 
@@ -86,14 +104,6 @@ class MainActivity : AppCompatActivity() {
                 adapter.submitList(it.events)
             }
             .launchIn(lifecycleScope)
-
-//        binding.share.setOnClickListener {
-//            toast(R.string.not_implemented)
-//        }
-//
-//        binding.menu.setOnClickListener {
-//            toast(R.string.not_implemented)
-//        }
 
     }
 }
