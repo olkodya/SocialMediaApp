@@ -2,13 +2,12 @@ package com.eltex.androidschool.activity
 
 import android.content.Intent
 import android.os.Bundle
-import android.text.Editable
 import androidx.appcompat.app.AppCompatActivity
 import com.eltex.androidschool.R
 import com.eltex.androidschool.databinding.ActivityEditEventBinding
+import com.eltex.androidschool.utils.toEditable
 import com.eltex.androidschool.utils.toast
 
-fun String.toEditable(): Editable = Editable.Factory.getInstance().newEditable(this)
 class EditEventActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

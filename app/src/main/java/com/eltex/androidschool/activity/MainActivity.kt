@@ -18,6 +18,7 @@ import com.eltex.androidschool.repository.InMemoryEventRepository
 import com.eltex.androidschool.viewmodel.EventViewModel
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+
 class MainActivity : AppCompatActivity() {
 
 
@@ -54,6 +55,17 @@ class MainActivity : AppCompatActivity() {
                 }
             }
 
+        if (intent.action == Intent.ACTION_SEND) {
+            val text = intent.getStringExtra(Intent.EXTRA_TEXT)
+            intent.removeExtra(Intent.EXTRA_TEXT)
+            if (!text.isNullOrBlank()) {
+                newEventContract.launch(
+                    Intent(this, NewEventActivity::class.java)
+                        .putExtra(Intent.EXTRA_TEXT, text)
+                )
+            }
+        }
+
 
         val adapter = EventsAdapter(
             object : EventsAdapter.EventListener {
@@ -66,7 +78,7 @@ class MainActivity : AppCompatActivity() {
                         .setAction(Intent.ACTION_SEND)
                         .putExtra(
                             Intent.EXTRA_TEXT,
-                            getString(R.string.share_text, event.author, event.content)
+                            event.content
                         )
                         .setType("text/plain")
 
