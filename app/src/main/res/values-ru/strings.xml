@@ -8,4 +8,5 @@
     <string name="like">like</string>
     <string name="share">поделиться</string>
     <string name="participate">учавствовать</string>
+    <string name="share_text">Автор: %s, контент: %s</string>
 </resources>

@@ -7,4 +7,5 @@
     <string name="like">like</string>
     <string name="share">share</string>
     <string name="participate">participate</string>
+    <string name="share_text"> Author: %s, content: %s</string>
 </resources>

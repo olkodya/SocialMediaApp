@@ -1,5 +1,6 @@
 package com.eltex.androidschool
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -30,12 +31,24 @@ class MainActivity : AppCompatActivity() {
             }
         }
         val adapter = EventsAdapter(
-            {
+            likeClickListener = {
                 viewModel.likeById(it.id)
             },
-            {
+            participateClickListener = {
                 viewModel.participateById(it.id)
 
+            },
+            shareClickListener = { event ->
+                val intent = Intent()
+                    .setAction(Intent.ACTION_SEND)
+                    .putExtra(
+                        Intent.EXTRA_TEXT,
+                        getString(R.string.share_text, event.author, event.content)
+                    )
+                    .setType("text/plain")
+
+                val chooser = Intent.createChooser(intent, null)
+                startActivity(chooser)
             }
         )
 

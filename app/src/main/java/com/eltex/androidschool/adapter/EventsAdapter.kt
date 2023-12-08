@@ -10,7 +10,8 @@ import com.eltex.androidschool.utils.toast
 
 class EventsAdapter(
     private val likeClickListener: (Event) -> Unit,
-    private val participateClickListener: (Event) -> Unit
+    private val participateClickListener: (Event) -> Unit,
+    private val shareClickListener: (Event) -> Unit,
 ) :
     ListAdapter<Event, EventViewHolder>(EventItemCallback()) {
 
@@ -26,7 +27,7 @@ class EventsAdapter(
         }
 
         eventBinding.share.setOnClickListener {
-            parent.context.toast(R.string.not_implemented)
+            shareClickListener(getItem(viewHolder.adapterPosition))
         }
 
         eventBinding.menu.setOnClickListener {
