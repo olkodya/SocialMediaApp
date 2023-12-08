@@ -8,4 +8,9 @@
     <string name="share">share</string>
     <string name="participate">participate</string>
     <string name="share_text"> Author: %s, content: %s</string>
+    <string name="save_post">Save</string>
+    <string name="new_event_menu">New Event</string>
+    <string name="content">Content</string>
+    <string name="new_event_description">New event</string>
+    <string name="event_empty_error">Content must not be blank</string>
 </resources>

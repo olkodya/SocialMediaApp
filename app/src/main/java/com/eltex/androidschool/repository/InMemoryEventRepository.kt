@@ -21,7 +21,7 @@ class InMemoryEventRepository : EventRepository {
             )
         }.reversed()
     )
-
+    private var nextId = state.value.first().id
     override fun getEvent(): Flow<List<Event>> = state.asStateFlow()
     override fun likeById(id: Long) {
         state.update { events ->
@@ -44,6 +44,15 @@ class InMemoryEventRepository : EventRepository {
                 } else {
                     it
                 }
+            }
+        }
+    }
+
+    override fun addEvent(content: String) {
+        state.update { events ->
+            buildList(events.size + 1) {
+                add(Event(id = ++nextId, content = content, author = "Olga", published = "Now"))
+                addAll(events)
             }
         }
     }

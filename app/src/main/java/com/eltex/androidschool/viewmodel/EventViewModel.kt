@@ -30,4 +30,8 @@ class EventViewModel(private val repository: EventRepository) : ViewModel() {
     fun participateById(id: Long) {
         repository.participateById(id)
     }
+
+    fun addEvent(content: String) {
+        repository.addEvent(content)
+    }
 }

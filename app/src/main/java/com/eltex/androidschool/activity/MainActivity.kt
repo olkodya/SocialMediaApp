@@ -1,13 +1,15 @@
-package com.eltex.androidschool
+package com.eltex.androidschool.activity
 
 import android.content.Intent
 import android.os.Bundle
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
+import com.eltex.androidschool.R
 import com.eltex.androidschool.adapter.EventsAdapter
 import com.eltex.androidschool.databinding.EventBinding
 import com.eltex.androidschool.itemdecoration.OffsetDecoration
@@ -17,7 +19,6 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 
 class MainActivity : AppCompatActivity() {
-
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -30,6 +31,21 @@ class MainActivity : AppCompatActivity() {
                 initializer { EventViewModel(InMemoryEventRepository()) }
             }
         }
+
+        val newEventContract =
+            registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+                val content = it.data?.getStringExtra(Intent.EXTRA_TEXT)
+                if (content != null) {
+                    viewModel.addEvent(content)
+                }
+            }
+
+        binding.newEvent.setOnClickListener {
+            val intent = Intent(this, NewEventActivity::class.java)
+            newEventContract.launch(intent)
+        }
+
+
         val adapter = EventsAdapter(
             likeClickListener = {
                 viewModel.likeById(it.id)
@@ -52,9 +68,9 @@ class MainActivity : AppCompatActivity() {
             }
         )
 
-        binding.root.adapter = adapter
+        binding.list.adapter = adapter
 
-        binding.root.addItemDecoration(OffsetDecoration(resources.getDimensionPixelSize(R.dimen.small_spacing)))
+        binding.list.addItemDecoration(OffsetDecoration(resources.getDimensionPixelSize(R.dimen.small_spacing)))
         viewModel.uiState
             .flowWithLifecycle(lifecycle)
             .onEach {
