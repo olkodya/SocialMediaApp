@@ -9,11 +9,15 @@ import com.eltex.androidschool.utils.toEditable
 import com.eltex.androidschool.utils.toast
 
 class EditEventActivity : AppCompatActivity() {
+    private companion object {
+        const val ID = "ID"
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val binding = ActivityEditEventBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        val id = intent.getLongExtra("ID", 0)
+        val id = intent.getLongExtra(ID, 0)
         val content = intent.getStringExtra(Intent.EXTRA_TEXT)
         binding.content.text = content?.toEditable()
 

@@ -14,13 +14,15 @@ import com.eltex.androidschool.adapter.EventsAdapter
 import com.eltex.androidschool.databinding.EventBinding
 import com.eltex.androidschool.itemdecoration.OffsetDecoration
 import com.eltex.androidschool.model.Event
-import com.eltex.androidschool.repository.InMemoryEventRepository
+import com.eltex.androidschool.repository.LocalEventsRepository
 import com.eltex.androidschool.viewmodel.EventViewModel
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 
 class MainActivity : AppCompatActivity() {
-
+    private companion object {
+        const val ID = "ID"
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -29,7 +31,7 @@ class MainActivity : AppCompatActivity() {
 
         val viewModel by viewModels<EventViewModel> {
             viewModelFactory {
-                initializer { EventViewModel(InMemoryEventRepository()) }
+                initializer { EventViewModel(LocalEventsRepository(applicationContext)) }
             }
         }
 
@@ -48,7 +50,7 @@ class MainActivity : AppCompatActivity() {
 
         val editEventContract =
             registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
-                val id = it.data?.getLongExtra("ID", 0)
+                val id = it.data?.getLongExtra(ID, 0)
                 val content = it.data?.getStringExtra(Intent.EXTRA_TEXT)
                 if (content != null && id != null) {
                     viewModel.editById(id, content)
@@ -100,7 +102,7 @@ class MainActivity : AppCompatActivity() {
                         .putExtra(
                             Intent.EXTRA_TEXT,
                             event.content
-                        ).putExtra("ID", event.id)
+                        ).putExtra(ID, event.id)
                     editEventContract.launch(intent)
                 }
 
