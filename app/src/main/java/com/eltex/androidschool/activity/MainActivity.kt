@@ -15,7 +15,7 @@ import com.eltex.androidschool.databinding.EventBinding
 import com.eltex.androidschool.db.AppDb
 import com.eltex.androidschool.itemdecoration.OffsetDecoration
 import com.eltex.androidschool.model.Event
-import com.eltex.androidschool.repository.SqliteEventsRepository
+import com.eltex.androidschool.repository.RoomEventsRepository
 import com.eltex.androidschool.viewmodel.EventViewModel
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
@@ -34,7 +34,7 @@ class MainActivity : AppCompatActivity() {
             viewModelFactory {
                 initializer {
                     EventViewModel(
-                        SqliteEventsRepository(
+                        RoomEventsRepository(
                             AppDb.getInstance(
                                 applicationContext
                             ).eventDao

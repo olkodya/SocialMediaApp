@@ -2,6 +2,7 @@ plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
     kotlin("plugin.serialization") version "1.9.0"
+    id("com.google.devtools.ksp") version "1.9.21-1.0.15"
 }
 
 android {
@@ -41,6 +42,9 @@ android {
 }
 
 dependencies {
+    val roomVersion = "2.6.1"
+    implementation("androidx.room:room-ktx:$roomVersion")
+    ksp("androidx.room:room-compiler:$roomVersion")
     val lifecycleVersion = "2.6.2"
     implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycleVersion")
     implementation("androidx.activity:activity-ktx:1.8.1")
