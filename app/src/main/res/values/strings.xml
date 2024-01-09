@@ -16,4 +16,10 @@
     <string name="delete_event">Delete event</string>
     <string name="edit_event">Edit event</string>
     <string name="edit_event_title">Edit Event</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="events_description">Events</string>
+    <string name="posts_description">Posts</string>
+    <string name="users_description">Users</string>
+    <string name="new_event_label">New event</string>
 </resources>

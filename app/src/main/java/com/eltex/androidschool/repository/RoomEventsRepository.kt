@@ -20,13 +20,12 @@ class RoomEventsRepository(private val dao: EventDao) : EventRepository {
         dao.participateById(id)
     }
 
-    override fun addEvent(content: String) {
+    override fun saveEvent(id: Long, content: String) {
         dao.save(
             EventEntity.fromEvent(
-                Event(content = content, author = "Me")
+                Event(id = id, content = content, author = "Me")
             )
         )
-
     }
 
     override fun deleteById(id: Long) {
