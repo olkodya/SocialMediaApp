@@ -15,6 +15,7 @@ import com.eltex.androidschool.R
 import com.eltex.androidschool.databinding.FragmentNewEventBinding
 import com.eltex.androidschool.db.AppDb
 import com.eltex.androidschool.repository.RoomEventsRepository
+import com.eltex.androidschool.utils.toEditable
 import com.eltex.androidschool.utils.toast
 import com.eltex.androidschool.viewmodel.NewEventViewModel
 import com.eltex.androidschool.viewmodel.ToolbarViewModel
@@ -26,6 +27,7 @@ class NewEventFragment : Fragment() {
 
     companion object {
         const val ARG_ID = "ARG_ID"
+        const val ARG_CONTENT = "ARG_CONTENT"
     }
 
     private val toolbarViewModel by activityViewModels<ToolbarViewModel>()
@@ -51,6 +53,9 @@ class NewEventFragment : Fragment() {
 
 
         val id = arguments?.getLong(ARG_ID) ?: 0L
+        val content = arguments?.getString(ARG_CONTENT)
+        binding.content.text = content?.toEditable()
+
         val viewModel by viewModels<NewEventViewModel>() {
             viewModelFactory {
                 initializer {

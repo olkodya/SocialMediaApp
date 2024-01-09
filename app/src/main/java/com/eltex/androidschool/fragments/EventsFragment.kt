@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.flowWithLifecycle
@@ -30,7 +31,6 @@ class EventsFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        // Inflate the layout for this fragment
 
 
         val viewModel by viewModels<EventViewModel> {
@@ -79,23 +79,19 @@ class EventsFragment : Fragment() {
                 }
 
                 override fun onEditClickListener(event: Event) {
-                    requireContext()
-                    findNavController()
+                    requireParentFragment()
+                        .requireParentFragment()
+                        .findNavController()
                         .navigate(
-                            R.id.action_eventsFragment4_to_newEventFragment
-                        )
+                            R.id.action_bottomNavigationFragment_to_newEventFragment,
+                            bundleOf(
+                                NewEventFragment.ARG_ID to event.id,
+                                NewEventFragment.ARG_CONTENT to event.content
+                            ),
+
+
+                            )
                 }
-
-//                override fun onEditClickListener(event: Event) {
-//                    val intent = Intent(this@MainActivity, EditEventActivity::class.java)
-//                        .setAction(Intent.ACTION_SEND)
-//                        .putExtra(
-//                            Intent.EXTRA_TEXT,
-//                            event.content
-//                        ).putExtra(ID, event.id)
-//                    editEventContract.launch(intent)
-//                }
-
             }
         )
 

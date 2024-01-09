@@ -19,13 +19,4 @@
         android:name="com.eltex.androidschool.fragments.NewEventFragment"
         android:label="@string/new_event_label"
         tools:layout="@layout/fragment_new_event" />
-    <fragment
-        android:id="@+id/eventsFragment4"
-        android:name="com.eltex.androidschool.fragments.EventsFragment"
-        android:label="fragment_events"
-        tools:layout="@layout/fragment_events">
-        <action
-            android:id="@+id/action_eventsFragment4_to_newEventFragment"
-            app:destination="@id/newEventFragment" />
-    </fragment>
 </navigation>
