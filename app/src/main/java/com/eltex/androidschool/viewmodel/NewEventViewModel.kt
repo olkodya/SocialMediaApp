@@ -9,6 +9,6 @@ class NewEventViewModel(
 ) : ViewModel() {
 
     fun save(content: String) {
-        repository.saveEvent(id, content)
+//        repository.saveEvent(id, content)
     }
 }

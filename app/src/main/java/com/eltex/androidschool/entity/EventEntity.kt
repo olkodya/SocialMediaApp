@@ -33,11 +33,11 @@ data class EventEntity(
         content = content,
         author = author,
         published = published,
-        type = type,
+//        type = type,
         datetime = datetime,
         likedByMe = likedByMe,
         participatedByMe = participatedByMe,
-        link = link
+//        link = link
     )
 
     companion object {
@@ -47,7 +47,7 @@ data class EventEntity(
                 content = content,
                 author = author,
                 published = published,
-                type = type,
+//                type = type,
                 datetime = datetime,
                 likedByMe = likedByMe,
                 participatedByMe = participatedByMe

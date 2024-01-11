@@ -1,3 +1,4 @@
+import java.util.Properties
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
@@ -21,6 +22,19 @@ android {
         ksp {
             arg("room.schemaLocation", "$projectDir/schemas")
         }
+
+        val secretProps: Properties = rootDir.resolve("secrets.properties")
+            .bufferedReader()
+            .use {
+                Properties().apply {
+                    load(it)
+                }
+
+            }
+
+        buildConfigField("String", "API_KEY", secretProps.getProperty("API_KEY"))
+        buildConfigField("String", "AUTH_TOKEN", secretProps.getProperty("AUTH_TOKEN"))
+
     }
 
     buildTypes {
@@ -35,6 +49,7 @@ android {
 
     buildFeatures {
         viewBinding = true
+        buildConfig = true
     }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8
@@ -60,9 +75,12 @@ dependencies {
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.2")
-
+    implementation("androidx.swiperefreshlayout:swiperefreshlayout:1.1.0")
     val navigationVersion = "2.7.6"
     implementation("androidx.navigation:navigation-fragment-ktx:$navigationVersion")
     implementation("androidx.navigation:navigation-ui-ktx:$navigationVersion")
 
+    implementation(platform("com.squareup.okhttp3:okhttp-bom:4.12.0"))
+    implementation("com.squareup.okhttp3:okhttp")
+    implementation("com.squareup.okhttp3:logging-interceptor")
 }

@@ -13,8 +13,7 @@ import androidx.lifecycle.viewmodel.viewModelFactory
 import androidx.navigation.fragment.findNavController
 import com.eltex.androidschool.R
 import com.eltex.androidschool.databinding.FragmentNewEventBinding
-import com.eltex.androidschool.db.AppDb
-import com.eltex.androidschool.repository.RoomEventsRepository
+import com.eltex.androidschool.repository.NetworkEventRepository
 import com.eltex.androidschool.utils.toEditable
 import com.eltex.androidschool.utils.toast
 import com.eltex.androidschool.viewmodel.NewEventViewModel
@@ -60,11 +59,7 @@ class NewEventFragment : Fragment() {
             viewModelFactory {
                 initializer {
                     NewEventViewModel(
-                        repository = RoomEventsRepository(
-                            AppDb.getInstance(
-                                requireContext().applicationContext
-                            ).eventDao
-                        ),
+                        repository = NetworkEventRepository(),
                         id = id,
                     )
                 }

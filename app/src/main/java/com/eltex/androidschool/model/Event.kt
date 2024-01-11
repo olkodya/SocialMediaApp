@@ -21,7 +21,7 @@ data class Event(
     val likedByMe: Boolean = false,
     @SerialName("participatedByMe")
     val participatedByMe: Boolean = false,
-    @SerialName("link")
-    val link: String = "",
+//    @SerialName("link")
+//    val link: String = "",
 )
 

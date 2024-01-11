@@ -5,7 +5,9 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.core.os.bundleOf
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.flowWithLifecycle
@@ -16,10 +18,10 @@ import androidx.navigation.fragment.findNavController
 import com.eltex.androidschool.R
 import com.eltex.androidschool.adapter.EventsAdapter
 import com.eltex.androidschool.databinding.FragmentEventsBinding
-import com.eltex.androidschool.db.AppDb
 import com.eltex.androidschool.itemdecoration.OffsetDecoration
 import com.eltex.androidschool.model.Event
-import com.eltex.androidschool.repository.RoomEventsRepository
+import com.eltex.androidschool.repository.NetworkEventRepository
+import com.eltex.androidschool.utils.getText
 import com.eltex.androidschool.viewmodel.EventViewModel
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
@@ -37,11 +39,7 @@ class EventsFragment : Fragment() {
             viewModelFactory {
                 initializer {
                     EventViewModel(
-                        RoomEventsRepository(
-                            AppDb.getInstance(
-                                requireContext().applicationContext
-                            ).eventDao
-                        )
+                        NetworkEventRepository()
                     )
                 }
             }
@@ -54,7 +52,7 @@ class EventsFragment : Fragment() {
         val adapter = EventsAdapter(
             object : EventsAdapter.EventListener {
                 override fun onLikeClickListener(event: Event) {
-                    viewModel.likeById(event.id)
+                    viewModel.likeById(event)
                 }
 
                 override fun onShareClickListener(event: Event) {
@@ -75,7 +73,7 @@ class EventsFragment : Fragment() {
                 }
 
                 override fun onParticipateClickListener(event: Event) {
-                    viewModel.participateById(event.id)
+                    viewModel.participateById(event)
                 }
 
                 override fun onEditClickListener(event: Event) {
@@ -97,11 +95,36 @@ class EventsFragment : Fragment() {
 
         binding.list.adapter = adapter
 
+        binding.swipeRefresh.setOnRefreshListener {
+            viewModel.load()
+        }
+
+        binding.retryButton.setOnClickListener {
+            viewModel.load()
+        }
+
         binding.list.addItemDecoration(OffsetDecoration(resources.getDimensionPixelSize(R.dimen.small_spacing)))
         viewModel.uiState
             .flowWithLifecycle(viewLifecycleOwner.lifecycle)
-            .onEach {
-                adapter.submitList(it.events)
+            .onEach { state ->
+                binding.swipeRefresh.isRefreshing = state.isRefreshing
+
+                val emptyError = state.emptyError
+                binding.errorGroup.isVisible = emptyError != null
+                binding.errorText.text = emptyError?.getText(requireContext())
+
+                binding.progress.isVisible = state.isEmptyLoading
+
+                state.refreshingError?.let {
+                    Toast.makeText(
+                        requireContext(),
+                        it.getText(requireContext()),
+                        Toast.LENGTH_SHORT
+                    ).show()
+                    viewModel.handleError()
+                }
+
+                adapter.submitList(state.events)
             }
             .launchIn(viewLifecycleOwner.lifecycleScope)
 
