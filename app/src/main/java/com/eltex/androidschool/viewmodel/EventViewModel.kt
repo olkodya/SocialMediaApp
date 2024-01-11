@@ -41,9 +41,7 @@ class EventViewModel(private val repository: EventRepository) : ViewModel() {
 
 
     fun likeById(event: Event) {
-
         _uiState.update { it.copy(status = Status.Loading) }
-        if (!event.likedByMe) {
             repository.likeById(
                 event.id,
                 object : Callback<Event> {
@@ -67,16 +65,14 @@ class EventViewModel(private val repository: EventRepository) : ViewModel() {
                         }
                     }
 
-                }
+                },
+                event.likedByMe
             )
-        } else {
-            //TODO HW
-        }
     }
 
     fun participateById(event: Event) {
         _uiState.update { it.copy(status = Status.Loading) }
-        if (!event.participatedByMe) {
+//        if (!event.participatedByMe) {
             repository.participateById(
                 event.id,
                 object : Callback<Event> {
@@ -100,11 +96,12 @@ class EventViewModel(private val repository: EventRepository) : ViewModel() {
                         }
                     }
 
-                }
+                },
+                event.participatedByMe
             )
-        } else {
-            //TODO HW
-        }
+//        } else {
+//            //TODO HW
+//        }
 
     }
 
@@ -133,7 +130,6 @@ class EventViewModel(private val repository: EventRepository) : ViewModel() {
 
             }
         )
-
     }
 
     fun editById(id: Long, content: String) {
