@@ -9,14 +9,14 @@ data class Event(
     val id: Long = 0L,
     @SerialName("content")
     val content: String = "",
+    @SerialName("datetime")
+    val datetime: String = "",
     @SerialName("author")
     val author: String = "",
     @SerialName("published")
     val published: String = "",
-    @SerialName("type")
-    val type: EventType = EventType.OFFLINE,
-    @SerialName("datetime")
-    val datetime: String = "",
+//    @SerialName("type")
+//    val type: EventType = EventType.OFFLINE,
     @SerialName("likedByMe")
     val likedByMe: Boolean = false,
     @SerialName("participatedByMe")

@@ -95,6 +95,9 @@ class EventsFragment : Fragment() {
 
         binding.list.adapter = adapter
 
+        binding.list.addItemDecoration(OffsetDecoration(resources.getDimensionPixelSize(R.dimen.small_spacing)))
+
+
         binding.swipeRefresh.setOnRefreshListener {
             viewModel.load()
         }
@@ -103,7 +106,15 @@ class EventsFragment : Fragment() {
             viewModel.load()
         }
 
-        binding.list.addItemDecoration(OffsetDecoration(resources.getDimensionPixelSize(R.dimen.small_spacing)))
+        requireActivity().supportFragmentManager.setFragmentResultListener(
+            NewEventFragment.POST_UPDATED,
+            viewLifecycleOwner
+        ) { _, _ ->
+            viewModel.load()
+
+        }
+
+
         viewModel.uiState
             .flowWithLifecycle(viewLifecycleOwner.lifecycle)
             .onEach { state ->

@@ -2,12 +2,14 @@ package com.eltex.androidschool.repository
 
 import com.eltex.androidschool.BuildConfig
 import com.eltex.androidschool.model.Event
+import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import okhttp3.Call
 import okhttp3.Callback
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import okhttp3.Request
+import okhttp3.RequestBody.Companion.toRequestBody
 import okhttp3.Response
 import okhttp3.internal.EMPTY_REQUEST
 import okhttp3.logging.HttpLoggingInterceptor
@@ -80,10 +82,6 @@ class NetworkEventRepository : EventRepository {
         )
     }
 
-//    override fun likeById(id: Long, callback: com.eltex.androidschool.utils.Callback<Event>) {
-//        TODO("Not yet implemented")
-//    }
-
     override fun likeById(
         id: Long,
         callback: com.eltex.androidschool.utils.Callback<Event>,
@@ -134,7 +132,6 @@ class NetworkEventRepository : EventRepository {
         callback: com.eltex.androidschool.utils.Callback<Event>,
         participatedByMe: Boolean
     ) {
-
         val request: Request = if (!participatedByMe) {
             Request.Builder()
                 .post(EMPTY_REQUEST)
@@ -146,7 +143,9 @@ class NetworkEventRepository : EventRepository {
                 .url("https://eltex-android.ru/api/events/$id/participants")
                 .build()
         }
+
         val call = client.newCall(request)
+
         call.enqueue(
             object : Callback {
                 override fun onFailure(call: Call, e: IOException) {
@@ -176,9 +175,38 @@ class NetworkEventRepository : EventRepository {
     override fun saveEvent(
         id: Long,
         content: String,
-        callback: com.eltex.androidschool.utils.Callback<List<Event>>
+        datetime: String,
+        callback: com.eltex.androidschool.utils.Callback<Event>
     ) {
-        TODO("Not yet implemented")
+        val request = Request.Builder()
+            .post(json.encodeToString(Event(id, content, datetime)).toRequestBody(JSON_TYPE))
+            .url("https://eltex-android.ru/api/events")
+            .build()
+        val call = client.newCall(request)
+        call.enqueue(
+            object : Callback {
+                override fun onFailure(call: Call, e: IOException) {
+                    callback.onError(e)
+                }
+
+                override fun onResponse(call: Call, response: Response) {
+                    if (response.isSuccessful) {
+                        val body = response.body
+                        if (body == null) {
+                            callback.onError(RuntimeException("Response body is null"))
+                            return
+                        }
+                        try {
+                            callback.onSuccess(json.decodeFromString(body.string()))
+                        } catch (e: Exception) {
+                            callback.onError(e)
+                        }
+                    } else {
+                        callback.onError(RuntimeException("Response code: ${response.code}"))
+                    }
+                }
+            }
+        )
     }
 
     override fun deleteById(
