@@ -1,12 +1,10 @@
 package com.eltex.androidschool.fragments
 
-import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.annotation.RequiresApi
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -33,7 +31,7 @@ class NewEventFragment : Fragment() {
     companion object {
         const val ARG_ID = "ARG_ID"
         const val ARG_CONTENT = "ARG_CONTENT"
-        const val POST_UPDATED = "EVENT_UPDATED"
+        const val EVENT_UPDATED = "EVENT_UPDATED"
     }
 
     private val toolbarViewModel by activityViewModels<ToolbarViewModel>()
@@ -49,7 +47,6 @@ class NewEventFragment : Fragment() {
         toolbarViewModel.showSave(false)
     }
 
-    @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -77,9 +74,11 @@ class NewEventFragment : Fragment() {
 
         viewModel.state.onEach { state ->
             if (state.result != null) {
-                requireActivity().supportFragmentManager.setFragmentResult(POST_UPDATED, bundleOf())
+                requireActivity().supportFragmentManager.setFragmentResult(
+                    EVENT_UPDATED,
+                    bundleOf()
+                )
                 findNavController().navigateUp()
-
             }
             (state.status as? Status.Error)?.let {
                 Toast.makeText(
@@ -87,7 +86,6 @@ class NewEventFragment : Fragment() {
                     it.reason.getText(requireContext()),
                     Toast.LENGTH_SHORT
                 ).show()
-
                 viewModel.handleError()
 
             }
@@ -100,7 +98,6 @@ class NewEventFragment : Fragment() {
                 val newContent = binding.content.text?.toString().orEmpty()
                 if (newContent.isNotBlank()) {
                     viewModel.save(newContent, "2024-01-11T18:41:32.284+00:00")
-                    findNavController().navigateUp()
                 } else {
                     requireContext().toast(R.string.event_empty_error, true)
                 }

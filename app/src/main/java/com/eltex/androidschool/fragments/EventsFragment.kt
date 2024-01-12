@@ -86,8 +86,6 @@ class EventsFragment : Fragment() {
                                 NewEventFragment.ARG_ID to event.id,
                                 NewEventFragment.ARG_CONTENT to event.content
                             ),
-
-
                             )
                 }
             }
@@ -107,11 +105,10 @@ class EventsFragment : Fragment() {
         }
 
         requireActivity().supportFragmentManager.setFragmentResultListener(
-            NewEventFragment.POST_UPDATED,
+            NewEventFragment.EVENT_UPDATED,
             viewLifecycleOwner
         ) { _, _ ->
             viewModel.load()
-
         }
 
 

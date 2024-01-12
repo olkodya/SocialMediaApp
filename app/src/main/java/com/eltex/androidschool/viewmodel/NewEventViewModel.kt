@@ -18,11 +18,10 @@ class NewEventViewModel(
     val state = _state.asStateFlow()
 
     fun save(content: String, datetime: String) {
-//        repository.saveEvent(id, content)
         _state.update { it.copy(status = Status.Loading) }
         repository.saveEvent(id, content, datetime, object : Callback<Event> {
             override fun onSuccess(data: Event) {
-                _state.update { it.copy(status = Status.Idle, result = data) }
+                _state.update { it.copy(result = data, status = Status.Idle) }
             }
 
             override fun onError(throwable: Throwable) {
