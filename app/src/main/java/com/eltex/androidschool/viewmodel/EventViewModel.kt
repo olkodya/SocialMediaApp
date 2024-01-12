@@ -131,7 +131,7 @@ class EventViewModel(private val repository: EventRepository) : ViewModel() {
                 }
             )
         } else {
-            repository.participateById(
+            repository.unParticipateById(
                 event.id,
                 object : Callback<Event> {
                     override fun onSuccess(data: Event) {
