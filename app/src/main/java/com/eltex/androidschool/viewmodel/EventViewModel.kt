@@ -42,19 +42,22 @@ class EventViewModel(private val repository: EventRepository) : ViewModel() {
 
     fun likeById(event: Event) {
         _uiState.update { it.copy(status = Status.Loading) }
+
+        if (!event.likedByMe) {
             repository.likeById(
                 event.id,
                 object : Callback<Event> {
                     override fun onSuccess(data: Event) {
                         _uiState.update { state ->
-                            state.copy(events = state.events.orEmpty()
-                                .map {
-                                    if (it.id == event.id) {
-                                        data
-                                    } else {
-                                        it
-                                    }
-                                }, status = Status.Idle
+                            state.copy(
+                                events = state.events.orEmpty()
+                                    .map {
+                                        if (it.id == event.id) {
+                                            data
+                                        } else {
+                                            it
+                                        }
+                                    }, status = Status.Idle
                             )
                         }
                     }
@@ -65,27 +68,56 @@ class EventViewModel(private val repository: EventRepository) : ViewModel() {
                         }
                     }
 
-                },
-                event.likedByMe
+                }
             )
+        } else {
+            repository.unLikeById(
+                event.id,
+                object : Callback<Event> {
+                    override fun onSuccess(data: Event) {
+                        _uiState.update { state ->
+                            state.copy(
+                                events = state.events.orEmpty()
+                                    .map {
+                                        if (it.id == event.id) {
+                                            data
+                                        } else {
+                                            it
+                                        }
+                                    }, status = Status.Idle
+                            )
+                        }
+                    }
+
+                    override fun onError(throwable: Throwable) {
+                        _uiState.update {
+                            it.copy(status = Status.Error(Throwable()))
+                        }
+                    }
+
+                }
+            )
+
+        }
     }
 
     fun participateById(event: Event) {
         _uiState.update { it.copy(status = Status.Loading) }
-//        if (!event.participatedByMe) {
+        if (!event.participatedByMe) {
             repository.participateById(
                 event.id,
                 object : Callback<Event> {
                     override fun onSuccess(data: Event) {
                         _uiState.update { state ->
-                            state.copy(events = state.events.orEmpty()
-                                .map {
-                                    if (it.id == event.id) {
-                                        data
-                                    } else {
-                                        it
-                                    }
-                                }, status = Status.Idle
+                            state.copy(
+                                events = state.events.orEmpty()
+                                    .map {
+                                        if (it.id == event.id) {
+                                            data
+                                        } else {
+                                            it
+                                        }
+                                    }, status = Status.Idle
                             )
                         }
                     }
@@ -96,12 +128,36 @@ class EventViewModel(private val repository: EventRepository) : ViewModel() {
                         }
                     }
 
-                },
-                event.participatedByMe
+                }
             )
-//        } else {
-//            //TODO HW
-//        }
+        } else {
+            repository.unParticipateById(
+                event.id,
+                object : Callback<Event> {
+                    override fun onSuccess(data: Event) {
+                        _uiState.update { state ->
+                            state.copy(
+                                events = state.events.orEmpty()
+                                    .map {
+                                        if (it.id == event.id) {
+                                            data
+                                        } else {
+                                            it
+                                        }
+                                    }, status = Status.Idle
+                            )
+                        }
+                    }
+
+                    override fun onError(throwable: Throwable) {
+                        _uiState.update {
+                            it.copy(status = Status.Error(Throwable()))
+                        }
+                    }
+
+                }
+            )
+        }
 
     }
 
@@ -130,10 +186,6 @@ class EventViewModel(private val repository: EventRepository) : ViewModel() {
 
             }
         )
-    }
-
-    fun editById(id: Long, content: String) {
-        repository.editById(id, content)
     }
 
 

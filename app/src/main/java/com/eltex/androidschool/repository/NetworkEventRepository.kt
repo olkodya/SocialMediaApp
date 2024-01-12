@@ -82,22 +82,11 @@ class NetworkEventRepository : EventRepository {
         )
     }
 
-    override fun likeById(
-        id: Long,
-        callback: com.eltex.androidschool.utils.Callback<Event>,
-        likedByMe: Boolean
-    ) {
-        val request: Request = if (!likedByMe) {
-            Request.Builder()
-                .post(EMPTY_REQUEST)
-                .url("https://eltex-android.ru/api/events/$id/likes")
-                .build()
-        } else {
-            Request.Builder()
-                .delete()
-                .url("https://eltex-android.ru/api/events/$id/likes")
-                .build()
-        }
+    override fun likeById(id: Long, callback: com.eltex.androidschool.utils.Callback<Event>) {
+        val request = Request.Builder()
+            .post(EMPTY_REQUEST)
+            .url("https://eltex-android.ru/api/events/$id/likes")
+            .build()
 
         val call = client.newCall(request)
         call.enqueue(
@@ -126,26 +115,88 @@ class NetworkEventRepository : EventRepository {
         )
     }
 
+    override fun unLikeById(id: Long, callback: com.eltex.androidschool.utils.Callback<Event>) {
+        val request = Request.Builder()
+            .delete()
+            .url("https://eltex-android.ru/api/events/$id/likes")
+            .build()
+        val call = client.newCall(request)
+        call.enqueue(
+            object : Callback {
+                override fun onFailure(call: Call, e: IOException) {
+                    callback.onError(e)
+                }
+
+                override fun onResponse(call: Call, response: Response) {
+                    if (response.isSuccessful) {
+                        val body = response.body
+                        if (body == null) {
+                            callback.onError(RuntimeException("Response body is null"))
+                            return
+                        }
+                        try {
+                            callback.onSuccess(json.decodeFromString(body.string()))
+                        } catch (e: Exception) {
+                            callback.onError(e)
+                        }
+                    } else {
+                        callback.onError(RuntimeException("Response code: ${response.code}"))
+                    }
+                }
+            }
+        )
+    }
+
+    override fun unParticipateById(
+        id: Long,
+        callback: com.eltex.androidschool.utils.Callback<Event>
+    ) {
+        val request = Request.Builder()
+            .delete()
+            .url("https://eltex-android.ru/api/events/$id/participants")
+            .build()
+
+        val call = client.newCall(request)
+        call.enqueue(
+            object : Callback {
+                override fun onFailure(call: Call, e: IOException) {
+                    callback.onError(e)
+                }
+
+                override fun onResponse(call: Call, response: Response) {
+                    if (response.isSuccessful) {
+                        val body = response.body
+                        if (body == null) {
+                            callback.onError(RuntimeException("Response body is null"))
+                            return
+                        }
+                        try {
+                            callback.onSuccess(json.decodeFromString(body.string()))
+                        } catch (e: Exception) {
+                            callback.onError(e)
+                        }
+                    } else {
+                        callback.onError(RuntimeException("Response code: ${response.code}"))
+                    }
+                }
+            }
+        )
+
+
+    }
+
 
     override fun participateById(
         id: Long,
         callback: com.eltex.androidschool.utils.Callback<Event>,
-        participatedByMe: Boolean
     ) {
-        val request: Request = if (!participatedByMe) {
-            Request.Builder()
-                .post(EMPTY_REQUEST)
-                .url("https://eltex-android.ru/api/events/$id/participants")
-                .build()
-        } else {
-            Request.Builder()
-                .delete()
-                .url("https://eltex-android.ru/api/events/$id/participants")
-                .build()
-        }
+        val request = Request.Builder()
+            .post(EMPTY_REQUEST)
+            .url("https://eltex-android.ru/api/events/$id/participants")
+            .build()
+
 
         val call = client.newCall(request)
-
         call.enqueue(
             object : Callback {
                 override fun onFailure(call: Call, e: IOException) {
@@ -237,10 +288,6 @@ class NetworkEventRepository : EventRepository {
                 }
             }
         )
-    }
-
-    override fun editById(id: Long, content: String) {
-        TODO("Not yet implemented")
     }
 
 }
