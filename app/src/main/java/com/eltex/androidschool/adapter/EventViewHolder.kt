@@ -3,19 +3,20 @@ package com.eltex.androidschool.adapter
 import androidx.recyclerview.widget.RecyclerView
 import com.eltex.androidschool.R
 import com.eltex.androidschool.databinding.CardEventBinding
-import com.eltex.androidschool.model.Event
+import com.eltex.androidschool.model.EventUiModel
 
-class EventViewHolder(val binding: CardEventBinding) : RecyclerView.ViewHolder(binding.root) {
+class EventViewHolder(private val binding: CardEventBinding) :
+    RecyclerView.ViewHolder(binding.root) {
     fun bindEvent(payload: EventPayload) {
-        if (payload.liked != null) {
-            updateLike(payload.liked)
+        if (payload.liked != null && payload.likes != null) {
+            updateLike(payload.liked, payload.likes)
         }
-        if (payload.participated != null) {
-            updateParticipate(payload.participated)
+        if (payload.participated != null && payload.participants != null) {
+            updateParticipate(payload.participated, payload.participants)
         }
     }
 
-    private fun updateParticipate(participatedByMe: Boolean) {
+    private fun updateParticipate(participatedByMe: Boolean, participants: Int) {
         binding.members.setIconResource(
             if (participatedByMe) {
                 R.drawable.baseline_group_24
@@ -23,14 +24,10 @@ class EventViewHolder(val binding: CardEventBinding) : RecyclerView.ViewHolder(b
                 R.drawable.outline_group_24
             }
         )
-        binding.members.text = if (participatedByMe) {
-            1
-        } else {
-            0
-        }.toString()
+        binding.members.text = participants.toString()
     }
 
-    private fun updateLike(likedByMe: Boolean) {
+    private fun updateLike(likedByMe: Boolean, likes: Int) {
         binding.like.setIconResource(
             if (likedByMe) {
                 R.drawable.baseline_favorite_24
@@ -38,16 +35,11 @@ class EventViewHolder(val binding: CardEventBinding) : RecyclerView.ViewHolder(b
                 R.drawable.baseline_favorite_border_24
             }
         )
-
-        binding.like.text = if (likedByMe) {
-            1
-        } else {
-            0
-        }.toString()
+        binding.like.text = likes.toString()
     }
 
     fun bindEvent(
-        event: Event
+        event: EventUiModel
     ) {
         binding.author.text = event.author
         binding.content.text = event.content
@@ -57,7 +49,7 @@ class EventViewHolder(val binding: CardEventBinding) : RecyclerView.ViewHolder(b
         binding.eventDate.text = event.datetime
         binding.published.text = event.published
 //        binding.eventLink.text = event.link
-        updateLike(event.likedByMe)
-        updateParticipate(event.participatedByMe)
+        updateLike(event.likedByMe, event.likes)
+        updateParticipate(event.participatedByMe, event.participants)
     }
 }

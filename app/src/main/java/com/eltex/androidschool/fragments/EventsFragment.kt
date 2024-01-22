@@ -20,7 +20,8 @@ import com.eltex.androidschool.adapter.EventsAdapter
 import com.eltex.androidschool.api.EventsApi
 import com.eltex.androidschool.databinding.FragmentEventsBinding
 import com.eltex.androidschool.itemdecoration.OffsetDecoration
-import com.eltex.androidschool.model.Event
+import com.eltex.androidschool.mapper.EventUiModelMapper
+import com.eltex.androidschool.model.EventUiModel
 import com.eltex.androidschool.repository.NetworkEventRepository
 import com.eltex.androidschool.utils.getText
 import com.eltex.androidschool.viewmodel.EventViewModel
@@ -40,7 +41,8 @@ class EventsFragment : Fragment() {
             viewModelFactory {
                 initializer {
                     EventViewModel(
-                        NetworkEventRepository(EventsApi.INSTANCE)
+                        NetworkEventRepository(EventsApi.INSTANCE),
+                        EventUiModelMapper()
                     )
                 }
             }
@@ -52,11 +54,11 @@ class EventsFragment : Fragment() {
 
         val adapter = EventsAdapter(
             object : EventsAdapter.EventListener {
-                override fun onLikeClickListener(event: Event) {
+                override fun onLikeClickListener(event: EventUiModel) {
                     viewModel.likeById(event)
                 }
 
-                override fun onShareClickListener(event: Event) {
+                override fun onShareClickListener(event: EventUiModel) {
                     val intent = Intent()
                         .setAction(Intent.ACTION_SEND)
                         .putExtra(
@@ -69,15 +71,15 @@ class EventsFragment : Fragment() {
                     startActivity(chooser)
                 }
 
-                override fun onDeleteClickListener(event: Event) {
+                override fun onDeleteClickListener(event: EventUiModel) {
                     viewModel.deleteById(event.id)
                 }
 
-                override fun onParticipateClickListener(event: Event) {
+                override fun onParticipateClickListener(event: EventUiModel) {
                     viewModel.participateById(event)
                 }
 
-                override fun onEditClickListener(event: Event) {
+                override fun onEditClickListener(event: EventUiModel) {
                     requireParentFragment()
                         .requireParentFragment()
                         .findNavController()

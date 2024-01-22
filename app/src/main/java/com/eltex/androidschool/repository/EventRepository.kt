@@ -1,15 +1,16 @@
 package com.eltex.androidschool.repository
 
 import com.eltex.androidschool.model.Event
-import com.eltex.androidschool.utils.Callback
+import io.reactivex.rxjava3.core.Completable
+import io.reactivex.rxjava3.core.Single
 
 interface EventRepository {
 
-    fun getEvents(callback: Callback<List<Event>>)
-    fun likeById(id: Long, callback: Callback<Event>)
-    fun participateById(id: Long, callback: Callback<Event>)
-    fun unLikeById(id: Long, callback: Callback<Event>)
-    fun unParticipateById(id: Long, callback: Callback<Event>)
-    fun saveEvent(id: Long, content: String, datetime: String, callback: Callback<Event>)
-    fun deleteById(id: Long, callback: Callback<Unit>)
+    fun getEvents(): Single<List<Event>>
+    fun likeById(id: Long): Single<Event>
+    fun participateById(id: Long): Single<Event>
+    fun unLikeById(id: Long): Single<Event>
+    fun unParticipateById(id: Long): Single<Event>
+    fun saveEvent(id: Long, content: String, datetime: String): Single<Event>
+    fun deleteById(id: Long): Completable
 }
