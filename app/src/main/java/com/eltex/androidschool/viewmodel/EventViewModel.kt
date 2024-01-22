@@ -5,6 +5,7 @@ import com.eltex.androidschool.mapper.EventUiModelMapper
 import com.eltex.androidschool.model.EventUiModel
 import com.eltex.androidschool.model.Status
 import com.eltex.androidschool.repository.EventRepository
+import com.eltex.androidschool.utils.SchedulersFactory
 import io.reactivex.rxjava3.disposables.CompositeDisposable
 import io.reactivex.rxjava3.kotlin.addTo
 import io.reactivex.rxjava3.kotlin.subscribeBy
@@ -16,6 +17,7 @@ import kotlinx.coroutines.flow.update
 class EventViewModel(
     private val repository: EventRepository,
     private val mapper: EventUiModelMapper,
+    private val schedulersFactory: SchedulersFactory = SchedulersFactory.DEFAULT
 ) : ViewModel() {
 
     private val disposable = CompositeDisposable()
@@ -30,11 +32,13 @@ class EventViewModel(
         _uiState.update { it.copy(status = Status.Loading) }
 
         repository.getEvents()
+            .observeOn(schedulersFactory.computation())
             .map { events ->
                 events.map {
                     mapper.map(it)
                 }
             }
+            .observeOn(schedulersFactory.mainThread())
             .subscribeBy(
                 onSuccess = { data ->
                     _uiState.update {
