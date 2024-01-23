@@ -6,7 +6,6 @@ import com.eltex.androidschool.mapper.EventUiModelMapper
 import com.eltex.androidschool.model.EventUiModel
 import com.eltex.androidschool.model.Status
 import com.eltex.androidschool.repository.EventRepository
-import com.eltex.androidschool.utils.SchedulersFactory
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -16,7 +15,6 @@ import kotlinx.coroutines.launch
 class EventViewModel(
     private val repository: EventRepository,
     private val mapper: EventUiModelMapper,
-    private val schedulersFactory: SchedulersFactory = SchedulersFactory.DEFAULT
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(EventUiState())
