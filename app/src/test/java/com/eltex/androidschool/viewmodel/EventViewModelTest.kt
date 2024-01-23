@@ -40,4 +40,9 @@ class EventViewModelTest {
 
         assertEquals(testError, (viewModel.uiState.value.status as Status.Error).reason)
     }
+
+    @Test
+    fun `deleteById successful`() {
+
+    }
 }
