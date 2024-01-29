@@ -16,8 +16,8 @@ import androidx.navigation.fragment.findNavController
 import com.eltex.androidschool.R
 import com.eltex.androidschool.api.EventsApi
 import com.eltex.androidschool.databinding.FragmentNewEventBinding
-import com.eltex.androidschool.model.Status
 import com.eltex.androidschool.repository.NetworkEventRepository
+import com.eltex.androidschool.utils.Status
 import com.eltex.androidschool.utils.getText
 import com.eltex.androidschool.utils.toEditable
 import com.eltex.androidschool.utils.toast

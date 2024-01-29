@@ -1,4 +1,4 @@
-package com.eltex.androidschool.model
+package com.eltex.androidschool.utils
 
 
 interface Status {
