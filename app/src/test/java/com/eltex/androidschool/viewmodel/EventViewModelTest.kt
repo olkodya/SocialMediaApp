@@ -1,16 +1,24 @@
 package com.eltex.androidschool.viewmodel
 
 import com.eltex.androidschool.MainDispatcherRule
+import com.eltex.androidschool.TestEventRepository
 import com.eltex.androidschool.mapper.EventUiModelMapper
 import com.eltex.androidschool.model.Event
 import com.eltex.androidschool.model.EventUiModel
 import com.eltex.androidschool.model.Status
-import com.eltex.androidschool.repository.EventRepository
 import junit.framework.TestCase.assertEquals
 import org.junit.Rule
 import org.junit.Test
+import java.time.Instant
+import java.time.ZoneId
+import java.time.format.DateTimeFormatter
 
 class EventViewModelTest {
+
+    private companion object {
+        val FORMATTER: DateTimeFormatter = DateTimeFormatter.ofPattern("dd.MM.yy HH:mm")
+    }
+
     @get:Rule
     val mainDispatcherRule = MainDispatcherRule()
 
@@ -19,19 +27,8 @@ class EventViewModelTest {
 
         val testError = RuntimeException("Test error")
         val viewModel = EventViewModel(
-            repository = object : EventRepository {
+            repository = object : TestEventRepository {
                 override suspend fun getEvents(): List<Event> = emptyList()
-                override suspend fun likeById(id: Long): Event = error("Not implemented")
-
-                override suspend fun participateById(id: Long): Event = error("Not implemented")
-
-                override suspend fun unLikeById(id: Long): Event = error("Not implemented")
-
-                override suspend fun unParticipateById(id: Long): Event = error("Not implemented")
-
-                override suspend fun saveEvent(id: Long, content: String, datetime: String): Event =
-                    error("Not implemented")
-
                 override suspend fun deleteById(id: Long) = throw testError
             },
             EventUiModelMapper()
@@ -51,19 +48,8 @@ class EventViewModelTest {
         val expected: List<EventUiModel> =
             listOf(EventUiModelMapper().map(event1), EventUiModelMapper().map(event3))
         val viewModel = EventViewModel(
-            repository = object : EventRepository {
+            repository = object : TestEventRepository {
                 override suspend fun getEvents(): List<Event> = events
-                override suspend fun likeById(id: Long): Event = error("Not implemented")
-
-                override suspend fun participateById(id: Long): Event = error("Not implemented")
-
-                override suspend fun unLikeById(id: Long): Event = error("Not implemented")
-
-                override suspend fun unParticipateById(id: Long): Event = error("Not implemented")
-
-                override suspend fun saveEvent(id: Long, content: String, datetime: String): Event =
-                    error("Not implemented")
-
                 override suspend fun deleteById(id: Long) {
                     events.removeIf { it.id == id }
                 }
@@ -78,28 +64,25 @@ class EventViewModelTest {
     @Test
     fun `likeById correct`() {
         val event3 = Event(id = 3L, content = "event3", likedByMe = false)
-        val expected = Event(id = 3L, content = "event3", likedByMe = true)
+        val testEvents = Event(id = 3L, content = "event3", likedByMe = true)
+        val expected = EventUiModel(
+            id = 3L, content = "event3", likedByMe = true,
+            published = FORMATTER.format(
+                Instant.now().atZone(
+                    ZoneId.systemDefault()
+                )
+            ),
+        )
         val viewModel = EventViewModel(
-            repository = object : EventRepository {
+            repository = object : TestEventRepository {
                 override suspend fun getEvents(): List<Event> = listOf(event3)
-                override suspend fun likeById(id: Long): Event = expected
-
-                override suspend fun participateById(id: Long): Event = error("Not implemented")
-
-                override suspend fun unLikeById(id: Long): Event = error("Not implemented")
-
-                override suspend fun unParticipateById(id: Long): Event = error("Not implemented")
-
-                override suspend fun saveEvent(id: Long, content: String, datetime: String): Event =
-                    error("Not implemented")
-
-                override suspend fun deleteById(id: Long) = error("Not implemented")
+                override suspend fun likeById(id: Long): Event = testEvents
             },
             EventUiModelMapper(),
         )
         viewModel.likeById(EventUiModelMapper().map(event3))
         val result = viewModel.uiState.value.events?.find { it.id == expected.id } ?: EventUiModel()
-        assertEquals(EventUiModelMapper().map(expected), result)
+        assertEquals(expected, result)
         assertEquals(Status.Idle, viewModel.uiState.value.status)
     }
 
@@ -108,20 +91,9 @@ class EventViewModelTest {
         val event3 = Event(id = 3L, content = "event3", likedByMe = false)
         val testError = RuntimeException("Test error")
         val viewModel = EventViewModel(
-            repository = object : EventRepository {
+            repository = object : TestEventRepository {
                 override suspend fun getEvents(): List<Event> = emptyList()
                 override suspend fun likeById(id: Long): Event = throw testError
-
-                override suspend fun participateById(id: Long): Event = error("Not implemented")
-
-                override suspend fun unLikeById(id: Long): Event = error("Not implemented")
-
-                override suspend fun unParticipateById(id: Long): Event = error("Not implemented")
-
-                override suspend fun saveEvent(id: Long, content: String, datetime: String): Event =
-                    error("Not implemented")
-
-                override suspend fun deleteById(id: Long) = error("Not implemented")
             },
             EventUiModelMapper(),
         )
@@ -132,28 +104,24 @@ class EventViewModelTest {
     @Test
     fun `unlikeById correct`() {
         val event3 = Event(id = 3L, content = "event3", likedByMe = true)
-        val expected = Event(id = 3L, content = "event3", likedByMe = false)
+        val testEvent = Event(id = 3L, content = "event3", likedByMe = false)
+        val expected = EventUiModel(
+            id = 3L, content = "event3", likedByMe = false, published = FORMATTER.format(
+                Instant.now().atZone(
+                    ZoneId.systemDefault()
+                )
+            )
+        )
         val viewModel = EventViewModel(
-            repository = object : EventRepository {
+            repository = object : TestEventRepository {
                 override suspend fun getEvents(): List<Event> = listOf(event3)
-                override suspend fun likeById(id: Long): Event = error("Not implemented")
-
-                override suspend fun participateById(id: Long): Event = error("Not implemented")
-
-                override suspend fun unLikeById(id: Long): Event = expected
-
-                override suspend fun unParticipateById(id: Long): Event = error("Not implemented")
-
-                override suspend fun saveEvent(id: Long, content: String, datetime: String): Event =
-                    error("Not implemented")
-
-                override suspend fun deleteById(id: Long) = error("Not implemented")
+                override suspend fun unLikeById(id: Long): Event = testEvent
             },
             EventUiModelMapper(),
         )
         viewModel.likeById(EventUiModelMapper().map(event3))
         val result = viewModel.uiState.value.events?.find { it.id == expected.id } ?: EventUiModel()
-        assertEquals(EventUiModelMapper().map(expected), result)
+        assertEquals(expected, result)
         assertEquals(Status.Idle, viewModel.uiState.value.status)
     }
 
@@ -162,20 +130,10 @@ class EventViewModelTest {
         val event3 = Event(id = 3L, content = "event3", likedByMe = true)
         val testError = RuntimeException("Test error")
         val viewModel = EventViewModel(
-            repository = object : EventRepository {
+            repository = object : TestEventRepository {
                 override suspend fun getEvents(): List<Event> = emptyList()
-                override suspend fun likeById(id: Long): Event = error("Not implemented")
-
-                override suspend fun participateById(id: Long): Event = error("Not implemented")
 
                 override suspend fun unLikeById(id: Long): Event = throw testError
-
-                override suspend fun unParticipateById(id: Long): Event = error("Not implemented")
-
-                override suspend fun saveEvent(id: Long, content: String, datetime: String): Event =
-                    error("Not implemented")
-
-                override suspend fun deleteById(id: Long) = error("Not implemented")
             },
             EventUiModelMapper(),
         )
@@ -186,28 +144,26 @@ class EventViewModelTest {
     @Test
     fun `participateById correct`() {
         val event3 = Event(id = 3L, content = "event3", participatedByMe = false)
-        val expected = Event(id = 3L, content = "event3", participatedByMe = true)
+        val testEvent = Event(id = 3L, content = "event3", participatedByMe = true)
+        val expected = EventUiModel(
+            id = 3L, content = "event3", participatedByMe = true, published = FORMATTER.format(
+                Instant.now().atZone(
+                    ZoneId.systemDefault()
+                )
+            )
+        )
         val viewModel = EventViewModel(
-            repository = object : EventRepository {
+            repository = object : TestEventRepository {
                 override suspend fun getEvents(): List<Event> = listOf(event3)
-                override suspend fun likeById(id: Long): Event = error("Not implemented")
 
-                override suspend fun participateById(id: Long): Event = expected
+                override suspend fun participateById(id: Long): Event = testEvent
 
-                override suspend fun unLikeById(id: Long): Event = error("Not implemented")
-
-                override suspend fun unParticipateById(id: Long): Event = error("Not implemented")
-
-                override suspend fun saveEvent(id: Long, content: String, datetime: String): Event =
-                    error("Not implemented")
-
-                override suspend fun deleteById(id: Long) = error("Not implemented")
             },
             EventUiModelMapper(),
         )
         viewModel.participateById(EventUiModelMapper().map(event3))
         val result = viewModel.uiState.value.events?.find { it.id == expected.id } ?: EventUiModel()
-        assertEquals(EventUiModelMapper().map(expected), result)
+        assertEquals(expected, result)
         assertEquals(Status.Idle, viewModel.uiState.value.status)
     }
 
@@ -216,20 +172,11 @@ class EventViewModelTest {
         val event3 = Event(id = 3L, content = "event3", participatedByMe = false)
         val testError = RuntimeException("Test error")
         val viewModel = EventViewModel(
-            repository = object : EventRepository {
+            repository = object : TestEventRepository {
                 override suspend fun getEvents(): List<Event> = emptyList()
-                override suspend fun likeById(id: Long): Event = error("Not implemented")
 
                 override suspend fun participateById(id: Long): Event = throw testError
 
-                override suspend fun unLikeById(id: Long): Event = error("Not implemented")
-
-                override suspend fun unParticipateById(id: Long): Event = error("Not implemented")
-
-                override suspend fun saveEvent(id: Long, content: String, datetime: String): Event =
-                    error("Not implemented")
-
-                override suspend fun deleteById(id: Long) = error("Not implemented")
             },
             EventUiModelMapper(),
         )
@@ -240,28 +187,26 @@ class EventViewModelTest {
     @Test
     fun `unParticipateById correct`() {
         val event3 = Event(id = 3L, content = "event3", participatedByMe = true)
-        val expected = Event(id = 3L, content = "event3", participatedByMe = false)
+        val testEvent = Event(id = 3L, content = "event3", participatedByMe = false)
+        val expected = EventUiModel(
+            id = 3L, content = "event3", participatedByMe = false, published = FORMATTER.format(
+                Instant.now().atZone(
+                    ZoneId.systemDefault()
+                )
+            )
+        )
         val viewModel = EventViewModel(
-            repository = object : EventRepository {
+            repository = object : TestEventRepository {
                 override suspend fun getEvents(): List<Event> = listOf(event3)
-                override suspend fun likeById(id: Long): Event = error("Not implemented")
 
-                override suspend fun participateById(id: Long): Event = error("Not implemented")
+                override suspend fun unParticipateById(id: Long): Event = testEvent
 
-                override suspend fun unLikeById(id: Long): Event = error("Not implemented")
-
-                override suspend fun unParticipateById(id: Long): Event = expected
-
-                override suspend fun saveEvent(id: Long, content: String, datetime: String): Event =
-                    error("Not implemented")
-
-                override suspend fun deleteById(id: Long) = error("Not implemented")
             },
             EventUiModelMapper(),
         )
         viewModel.participateById(EventUiModelMapper().map(event3))
         val result = viewModel.uiState.value.events?.find { it.id == expected.id } ?: EventUiModel()
-        assertEquals(EventUiModelMapper().map(expected), result)
+        assertEquals(expected, result)
         assertEquals(Status.Idle, viewModel.uiState.value.status)
     }
 
@@ -270,20 +215,11 @@ class EventViewModelTest {
         val event3 = Event(id = 3L, content = "event3", participatedByMe = true)
         val testError = RuntimeException("Test error")
         val viewModel = EventViewModel(
-            repository = object : EventRepository {
+            repository = object : TestEventRepository {
                 override suspend fun getEvents(): List<Event> = emptyList()
-                override suspend fun likeById(id: Long): Event = error("Not implemented")
-
-                override suspend fun participateById(id: Long): Event = error("Not implemented")
-
-                override suspend fun unLikeById(id: Long): Event = error("Not implemented")
 
                 override suspend fun unParticipateById(id: Long): Event = throw testError
 
-                override suspend fun saveEvent(id: Long, content: String, datetime: String): Event =
-                    error("Not implemented")
-
-                override suspend fun deleteById(id: Long) = error("Not implemented")
             },
             EventUiModelMapper(),
         )
@@ -304,22 +240,8 @@ class EventViewModelTest {
                 EventUiModelMapper().map(event3)
             )
         val viewModel = EventViewModel(
-            repository = object : EventRepository {
+            repository = object : TestEventRepository {
                 override suspend fun getEvents(): List<Event> = events
-                override suspend fun likeById(id: Long): Event = error("Not implemented")
-
-                override suspend fun participateById(id: Long): Event = error("Not implemented")
-
-                override suspend fun unLikeById(id: Long): Event = error("Not implemented")
-
-                override suspend fun unParticipateById(id: Long): Event = error("Not implemented")
-
-                override suspend fun saveEvent(id: Long, content: String, datetime: String): Event =
-                    error("Not implemented")
-
-                override suspend fun deleteById(id: Long) {
-                    events.removeIf { it.id == id }
-                }
             },
             EventUiModelMapper(),
         )
@@ -332,20 +254,8 @@ class EventViewModelTest {
     fun `load error then error in state`() {
         val testError = RuntimeException("Test error")
         val viewModel = EventViewModel(
-            repository = object : EventRepository {
+            repository = object : TestEventRepository {
                 override suspend fun getEvents(): List<Event> = throw testError
-                override suspend fun likeById(id: Long): Event = error("Not implemented")
-
-                override suspend fun participateById(id: Long): Event = error("Not implemented")
-
-                override suspend fun unLikeById(id: Long): Event = error("Not implemented")
-
-                override suspend fun unParticipateById(id: Long): Event = error("Not implemented")
-
-                override suspend fun saveEvent(id: Long, content: String, datetime: String): Event =
-                    error("Not implemented")
-
-                override suspend fun deleteById(id: Long) = error("Not implemented")
             },
             EventUiModelMapper(),
         )
