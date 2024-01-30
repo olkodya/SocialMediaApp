@@ -6,6 +6,7 @@ sealed interface EventMessage {
 
     // =>
     data object LoadNextPage : EventMessage
+    data object Retry : EventMessage
     data object Refresh : EventMessage
     data class Like(val event: EventUiModel) : EventMessage
     data class Participate(val event: EventUiModel) : EventMessage

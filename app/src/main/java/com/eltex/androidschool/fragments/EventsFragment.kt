@@ -22,6 +22,7 @@ import com.eltex.androidschool.api.EventsApi
 import com.eltex.androidschool.databinding.FragmentEventsBinding
 import com.eltex.androidschool.effecthandler.EventEffectHandler
 import com.eltex.androidschool.itemdecoration.OffsetDecoration
+import com.eltex.androidschool.mapper.EventPagingModelMapper
 import com.eltex.androidschool.model.EventMessage
 import com.eltex.androidschool.model.EventUiModel
 import com.eltex.androidschool.model.EventUiState
@@ -102,6 +103,10 @@ class EventsFragment : Fragment() {
                             ),
                         )
                 }
+
+                override fun onRetryPageClickListener() {
+                    viewModel.accept(EventMessage.Retry)
+                }
             }
         )
 
@@ -138,6 +143,8 @@ class EventsFragment : Fragment() {
         }
         )
 
+        val mapper = EventPagingModelMapper()
+
 
         viewModel.state
             .flowWithLifecycle(viewLifecycleOwner.lifecycle)
@@ -159,7 +166,7 @@ class EventsFragment : Fragment() {
                     viewModel.accept(EventMessage.HandleError)
                 }
 
-                adapter.submitList(state.events)
+                adapter.submitList(mapper.map(state))
             }
             .launchIn(viewLifecycleOwner.lifecycleScope)
 
