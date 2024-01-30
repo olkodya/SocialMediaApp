@@ -9,7 +9,7 @@ import com.eltex.androidschool.mvi.ReducerResult
 import com.eltex.androidschool.utils.Either
 
 class EventReducer : Reducer<EventUiState, EventEffect, EventMessage> {
-    private companion object {
+    companion object {
         const val PAGE_SIZE = 10
         const val INITIAL_LOAD_SIZE = 3 * PAGE_SIZE
     }

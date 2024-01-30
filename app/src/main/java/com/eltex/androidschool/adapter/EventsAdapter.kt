@@ -7,8 +7,8 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.eltex.androidschool.R
 import com.eltex.androidschool.databinding.CardEventBinding
+import com.eltex.androidschool.databinding.CardEventSkeletonBinding
 import com.eltex.androidschool.databinding.ItemErrorBinding
-import com.eltex.androidschool.databinding.ItemProgressBinding
 import com.eltex.androidschool.model.EventUiModel
 import com.eltex.androidschool.model.PagingModel
 
@@ -31,21 +31,21 @@ class EventsAdapter(
         when (getItem(position)) {
             is PagingModel.Data -> R.layout.card_event
             is PagingModel.Error -> R.layout.item_error
-            PagingModel.Progress -> R.layout.item_progress
+            PagingModel.Skeleton -> R.layout.card_event_skeleton
         }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return when (viewType) {
             R.layout.card_event -> createEventViewHolder(parent)
             R.layout.item_error -> createErrorViewHolder(parent)
-            R.layout.item_progress -> createProgressViewHolder(parent)
+            R.layout.card_event_skeleton -> createSkeletonViewHolder(parent)
             else -> error("Unknown view type: $viewType")
         }
     }
 
-    private fun createProgressViewHolder(parent: ViewGroup): ProgressViewHolder {
+    private fun createSkeletonViewHolder(parent: ViewGroup): SkeletonViewHolder {
         val inflater = LayoutInflater.from(parent.context)
-        return ProgressViewHolder(ItemProgressBinding.inflate(inflater, parent, false))
+        return SkeletonViewHolder(CardEventSkeletonBinding.inflate(inflater, parent, false))
     }
 
     private fun createErrorViewHolder(parent: ViewGroup): ErrorViewHolder {
@@ -101,7 +101,7 @@ class EventsAdapter(
         when (val item = getItem(position)) {
             is PagingModel.Data -> (holder as EventViewHolder).bindEvent(item.value)
             is PagingModel.Error -> (holder as ErrorViewHolder).bind(item.reason)
-            PagingModel.Progress -> Unit
+            PagingModel.Skeleton -> (holder as SkeletonViewHolder).bind()
         }
     }
 

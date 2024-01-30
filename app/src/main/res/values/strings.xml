@@ -26,4 +26,13 @@
     <string name="unknown_error">Unknown error\n</string>
     <string name="retry">Retry</string>
     <string name="edit_event_toolbar">Edit event</string>
+    <string name="default_date">11.05.22 11:21</string>
+    <string name="default_content_skeleton">Приглашаю провести уютный вечер за увлекательными играми! У нас есть несколько вариантов настолок, подходящих для любой компании.</string>
+    <string name="default_author">Lydia Westervelt</string>
+    <string name="default_likes_amount_skeleton">0</string>
+    <string name="default_participants_amount_skeleton">0</string>
+    <string name="default_published_skeleton">16.05.22 12:00</string>
+    <string name="default_link_skeleton">https://m2.material.io/components/cards</string>
+    <string name="default_eventType_skeleton">Offline</string>
+    <string name="default_event_date_skeleton">16.05.22 12:00</string>
 </resources>
