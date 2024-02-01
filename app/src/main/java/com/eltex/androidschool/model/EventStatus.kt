@@ -5,10 +5,7 @@ sealed interface EventStatus {
     data object NextPageLoading : EventStatus
     data object InitialLoading : EventStatus
     data object Refreshing : EventStatus
-
-    //    data object EmptyLoading: EventStatus
     data class EmptyError(val reason: Throwable) : EventStatus
     data class NextPageError(val reason: Throwable) : EventStatus
-
 
 }
