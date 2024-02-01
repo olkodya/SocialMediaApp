@@ -101,7 +101,7 @@ class EventsAdapter(
         when (val item = getItem(position)) {
             is PagingModel.Data -> (holder as EventViewHolder).bindEvent(item.value)
             is PagingModel.Error -> (holder as ErrorViewHolder).bind(item.reason)
-            PagingModel.Skeleton -> (holder as SkeletonViewHolder).bind()
+            PagingModel.Skeleton -> Unit
         }
     }
 
