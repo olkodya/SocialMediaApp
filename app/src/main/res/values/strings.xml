@@ -35,4 +35,5 @@
     <string name="default_link_skeleton">https://m2.material.io/components/cards</string>
     <string name="default_eventType_skeleton">Offline</string>
     <string name="default_event_date_skeleton">16.05.22 12:00</string>
+    <string name="remove">Remove</string>
 </resources>
