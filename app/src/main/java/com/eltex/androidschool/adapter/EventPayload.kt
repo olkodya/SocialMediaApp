@@ -8,5 +8,4 @@ data class EventPayload(
 ) {
     fun isNotEmpty(): Boolean =
         (liked != null || participated != null || likes != null || participants != null)
-
 }
