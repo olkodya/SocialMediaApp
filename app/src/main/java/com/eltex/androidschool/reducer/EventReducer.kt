@@ -4,7 +4,10 @@ import com.eltex.androidschool.model.EventEffect
 import com.eltex.androidschool.model.EventMessage
 import com.eltex.androidschool.model.EventStatus
 import com.eltex.androidschool.model.EventUiState
-import com.eltex.androidschool.mvi.Reducer
+import com.eltex.androidschool.mvi.ReducerResult
+import com.eltex.androidschool.utils.Either
+
+Reducer
 import com.eltex.androidschool.mvi.ReducerResult
 import com.eltex.androidschool.utils.Either
 
