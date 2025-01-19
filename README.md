@@ -1,14 +1,10 @@
-# Домашнее задание к занятию "12 Android. Первый проект"
+# Учебный проект по курсу от  Eltex "Разработка Android-приложений на Java и Kotlin"
 
-Цель задачи – научиться создавать Android проекты, ориентироваться в коде.
-
-## Задача №1. Hello Eltex
-
-Создайте новый Android проект и поменяйте надпись Hello World! на Hello Eltex!
-Не обращайте внимание на предупреждения со стороны IDE. Мы исправим их в следующий раз
-
-Данные для создания проекта:
-- com.eltex.androidschool
-- minSdk – 24
-- 100% Kotlin
-- Empty Views Activity (Не compose!)
+## Изученный стек технологий:
+1. UI - XML / Jetpack Compose;
+2. Работа с БД - SQLite, Room;
+3. Работа с сетью - OkHttp, Retrofit;
+4. Выполнение асинхронных операций - RxJava, Coroutines;
+5. Загрузка изображений - Glide;
+6. DI - Dagger Hilt;
+7. Архитектурные паттерны - MVI, MVVM.
