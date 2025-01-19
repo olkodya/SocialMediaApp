@@ -6,14 +6,11 @@ data class EventUiModel(
     val datetime: String = "",
     val author: String = "",
     val published: String = "",
-//    @SerialName("type")
-//    val type: EventType = EventType.OFFLINE,
     val likedByMe: Boolean = false,
     val participatedByMe: Boolean = false,
     val likes: Int = 0,
     val participants: Int = 0,
-
-//    @SerialName("link")
-//    val link: String = "",
+    val attachment: Attachment? = null,
+    val authorAvatar: String? = null
 )
 

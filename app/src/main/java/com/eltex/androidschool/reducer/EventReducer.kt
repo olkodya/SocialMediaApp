@@ -12,6 +12,11 @@ import com.eltex.androidschool.mvi.ReducerResult
 import com.eltex.androidschool.utils.Either
 
 class EventReducer : Reducer<EventUiState, EventEffect, EventMessage> {
+    companion object {
+        const val PAGE_SIZE = 10
+        const val INITIAL_LOAD_SIZE = 3 * PAGE_SIZE
+    }
+
     override fun reduce(
         old: EventUiState,
         message: EventMessage
@@ -46,7 +51,10 @@ class EventReducer : Reducer<EventUiState, EventEffect, EventMessage> {
                 }
 
                 is Either.Right ->
-                    old.copy(events = result.value, status = EventStatus.Idle)
+                    old.copy(
+                        events = result.value,
+                        status = EventStatus.Idle(result.value.size < INITIAL_LOAD_SIZE)
+                    )
             }
         )
 
@@ -141,9 +149,18 @@ class EventReducer : Reducer<EventUiState, EventEffect, EventMessage> {
             )
         }
 
-        EventMessage.LoadNextPage -> ReducerResult(
+        EventMessage.LoadNextPage -> if (old.status is EventStatus.Idle && !old.status.finish) {
+            ReducerResult(
+                old.copy(status = EventStatus.NextPageLoading),
+                EventEffect.LoadNextPage(old.events.last().id, PAGE_SIZE)
+            )
+        } else {
+            ReducerResult(old)
+        }
+
+        EventMessage.Retry -> ReducerResult(
             old.copy(status = EventStatus.NextPageLoading),
-            EventEffect.LoadNextPage(old.events.last().id, 5)
+            EventEffect.LoadNextPage(old.events.last().id, PAGE_SIZE)
         )
 
         is EventMessage.NextPageLoaded -> ReducerResult(
@@ -154,7 +171,7 @@ class EventReducer : Reducer<EventUiState, EventEffect, EventMessage> {
 
                 is Either.Right -> old.copy(
                     events = old.events + result.value,
-                    status = EventStatus.Idle,
+                    status = EventStatus.Idle(result.value.size < PAGE_SIZE),
                 )
             }
 
@@ -168,7 +185,7 @@ class EventReducer : Reducer<EventUiState, EventEffect, EventMessage> {
                     EventStatus.Refreshing
                 },
             ),
-            EventEffect.LoadInitialPage(15)
+            EventEffect.LoadInitialPage(INITIAL_LOAD_SIZE)
         )
     }
 }

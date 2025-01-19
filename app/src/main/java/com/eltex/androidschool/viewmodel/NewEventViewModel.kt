@@ -2,6 +2,7 @@ package com.eltex.androidschool.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.eltex.androidschool.model.FileModel
 import com.eltex.androidschool.repository.EventRepository
 import com.eltex.androidschool.utils.Status
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -21,7 +22,7 @@ class NewEventViewModel(
 
         viewModelScope.launch {
             try {
-                val data = repository.saveEvent(id, content, datetime)
+                val data = repository.saveEvent(id, content, datetime, _state.value.file)
                 _state.update { it.copy(result = data, status = Status.Idle) }
 
             } catch (e: Exception) {
@@ -30,6 +31,10 @@ class NewEventViewModel(
             }
 
         }
+    }
+
+    fun saveFile(fileModel: FileModel?) = _state.update {
+        it.copy(file = fileModel)
     }
 
     fun handleError() {

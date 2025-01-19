@@ -18,8 +18,6 @@ data class Event(
     @SerialName("published")
     @Serializable(InstantSerializer::class)
     val published: Instant = Instant.now(),
-//    @SerialName("type")
-//    val type: EventType = EventType.OFFLINE,
     @SerialName("likedByMe")
     val likedByMe: Boolean = false,
     @SerialName("participatedByMe")
@@ -28,7 +26,9 @@ data class Event(
     val likeOwnerIds: Set<Long> = emptySet(),
     @SerialName("participantsIds")
     val participantsIds: Set<Long> = emptySet(),
-//    @SerialName("link")
-//    val link: String = "",
+    @SerialName("attachment")
+    val attachment: Attachment? = null,
+    @SerialName("authorAvatar")
+    val authorAvatar: String? = null,
 )
 
